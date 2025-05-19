@@ -44,8 +44,8 @@ export async function updateProductSeo(input: any) {
         ...seoFields,
       },
     });
-    revalidatePath('/dashboard/seo/product');
-    revalidatePath(`/dashboard/seo/product/${productId}`);
+    await revalidatePath('/dashboard/seo/product');
+    await revalidatePath(`/dashboard/seo/product/${productId}`);
     return { success: true };
   } catch (e: any) {
     console.error('updateProductSeo error:', e);
