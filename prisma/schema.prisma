@@ -41,6 +41,7 @@ model SupplierTranslation {
 model Product {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   name       String   @default("")
+  description String   @default("")
   slug       String   @default("") @unique 
   price      Float    @default(0)
   compareAtPrice Float? // Optional: Price before sale
@@ -90,8 +91,6 @@ model Product {
   
   // Organization & SEO
   tags              String[] @default([]) // tags for filtering and organization
-  metaTitle         String?               // Custom SEO title
-  metaDescription   String?               // Custom SEO description
   translations      ProductTranslation[]  // Relation to product translations
 
   createdAt  DateTime    @default(now())
@@ -106,8 +105,6 @@ model ProductTranslation {
   languageCode    String   // e.g., "en", "ar-SA"
   name            String   // Translated product name
   details         String?  // Translated product details
-  metaTitle       String?  // Translated SEO title
-  metaDescription String?  // Translated SEO description
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -389,7 +386,6 @@ model TermTranslation {
   content        String   // Translated term content
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-
   @@unique([termId, languageCode])
 }
 
@@ -415,7 +411,7 @@ model GlobalSEO {
 }
 
 
-// Enum for different types of entities that can have SEO settings
+
 enum EntityType {
   PAGE     // For general pages like homepage, about, contact
   PRODUCT
@@ -423,7 +419,6 @@ enum EntityType {
   OFFER
   BLOG_POST
   BLOG_CATEGORY
-  // Add other types as needed
 }
 
 model Notification {
@@ -519,8 +514,6 @@ model WishlistItem {
   userId    String   @db.ObjectId
   productId String   @db.ObjectId
   createdAt DateTime @default(now())
-
-  // Relations
   user      User     @relation(fields: [userId], references: [id])
   product   Product  @relation(fields: [productId], references: [id])
 
@@ -535,17 +528,7 @@ model Category {
   slug        String    @unique // URL-friendly slug, should be unique
   description String?   // Optional description
   imageUrl    String?   // Optional image URL for the category
-  // parentId    String?   @db.ObjectId // For subcategories, refers to another Category's id
-  // parent      Category? @relation("SubCategories", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  // children    Category[] @relation("SubCategories") // List of subcategories
-  // products    Product[] // Old implicit relation removed
   productAssignments CategoryProduct[] // Explicit relation via join table
-  
-  // SEO Fields for Category
-  metaTitle         String?   // Custom SEO title for the category page
-  metaDescription   String?   // Custom SEO description for the category page
-  keywords          String[] // Optional: if you want category-specific keywords
-
   translations       CategoryTranslation[] // Relation to category translations
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -558,9 +541,6 @@ model CategoryTranslation {
   category       Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   languageCode   String   // e.g., "en", "ar-SA"
   name           String   // Translated category name
-  description    String?  // Translated category description
-  metaTitle      String?  // Translated SEO title for category
-  metaDescription String?  // Translated SEO description for category
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 

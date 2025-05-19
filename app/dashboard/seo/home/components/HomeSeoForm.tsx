@@ -399,7 +399,7 @@ export default function UniversalSeoForm({ defaultValues, mode, pageName, upsert
             هذه الحقول تُطبق على جميع اللغات تلقائيًا.
           </CardDescription>
           <div className="mt-2 p-3 bg-yellow-100 dark:bg-yellow-900/40 border border-yellow-400 dark:border-yellow-700 rounded-md flex items-center gap-2">
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-yellow-600 dark:text-yellow-300"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0ZM12 7v.01"/></svg>
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-yellow-600 dark:text-yellow-300"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0ZM12 7v.01" /></svg>
             <span className="text-sm text-yellow-800 dark:text-yellow-200">تنبيه: عند الحفظ سيتم استبدال جميع بيانات السيو الحالية لهذه الصفحة ({pageName}) ولن يتم إنشاء نسخة جديدة. إذا كانت هناك بيانات سابقة، سيتم تحديثها مباشرة.</span>
           </div>
         </CardHeader>

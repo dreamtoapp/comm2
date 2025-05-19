@@ -124,6 +124,9 @@ export const menuGroups = [
       { title: 'SEO الصفحة الرئيسية', url: '/dashboard/seo/home', icon: Home },
       { title: 'SEO من نحن', url: '/dashboard/seo/about', icon: Info },
       { title: 'SEO المدونة', url: '/dashboard/seo/blog', icon: Newspaper },
+      { title: 'SEO المنتجات', url: '/dashboard/seo/product', icon: Package },
+      { title: 'SEO العروض', url: '/dashboard/seo/promotion', icon: Gift },
+      { title: 'SEO الأصناف', url: '/dashboard/seo/category', icon: LayoutGrid },
     ],
   },
 ];

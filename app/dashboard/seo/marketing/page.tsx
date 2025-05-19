@@ -47,11 +47,10 @@ export default function PixelsAndAnalyticsPage() {
 					>
 						<Button
 							variant={active === platform.id ? 'default' : 'outline'}
-							className={`rounded-full px-4 py-1 text-sm font-medium transition-all ${
-								active === platform.id
+							className={`rounded-full px-4 py-1 text-sm font-medium transition-all ${active === platform.id
 									? 'bg-primary text-primary-foreground shadow'
 									: ''
-							}`}
+								}`}
 							aria-current={
 								active === platform.id ? 'page' : undefined
 							}
