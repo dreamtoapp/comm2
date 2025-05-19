@@ -1,0 +1,21 @@
+{
+  "name": "amwag",
+  "short_name": "amwag",
+  "theme_color": "#2196f3",
+  "background_color": "#2196f3",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/icons/android-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/splash-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

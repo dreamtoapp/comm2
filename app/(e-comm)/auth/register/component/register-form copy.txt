@@ -1,0 +1,141 @@
+// app/(auth)/register/page.tsx
+"use client";
+import { useActionState } from 'react';
+
+import { useRouter } from 'next/navigation';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+
+import { registerUser } from '../action/actions';
+
+export default function RegisterForm() {
+  const router = useRouter();
+
+
+
+
+  const [state, addAction, isPending] = useActionState(registerUser, { success: false, message: "" });
+
+
+  return (
+    <div className="flex  items-center justify-center">
+      <div className="w-full max-w-md space-y-4 rounded-lg bg-white p-6 shadow-md">
+        <h1 className="text-2xl font-bold text-center">تسجيل</h1>
+        <p className="text-sm text-center mb-6">إنشاء حساب</p>
+
+        <form className="space-y-4" action={addAction}>
+          <div>
+            <label className="block mb-2 text-sm">رقم الهاتف</label>
+            <Input
+              type="tel"
+              pattern="05[0-9]{8}"
+              maxLength={10}
+              name="phone"
+              placeholder="05XXXXXXXX"
+
+            />
+
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm">الاسم</label>
+            <Input
+              type="text"
+              name="name"
+              placeholder="محمد علي"
+
+            />
+
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm">كلمة المرور</label>
+            <Input
+              type="password"
+              name="password"
+              placeholder="********"
+            />
+
+          </div>
+
+          <div>
+            <label className="block mb-2 text-sm">تأكيد كلمة المرور</label>
+            <Input
+              type="password"
+              name="confirmPassword"
+              placeholder="********"
+            />
+
+          </div>
+          {state.message && (
+            <div
+              className={`mt-4 p-3 rounded ${state.success ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                }`}
+            >
+              {state.message}
+            </div>
+          )}
+
+
+          <Button
+            type="submit"
+            // onClick={handleSubmit}
+            disabled={isPending}
+            className="w-full"
+          >
+            {isPending ? (
+              <div className="flex items-center justify-center">
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                جاري التسجيل...
+              </div>
+            ) : (
+              "تسجيل"
+            )}
+          </Button>
+
+          <div className="flex items-center my-4">
+            <hr className="w-full border-t-2 border-gray-300" />
+            <span className="px-4 bg-white">أو</span>
+            <hr className="w-full border-t-2 border-gray-300" />
+          </div>
+
+          {/* <Button
+            variant="outline"
+            onClick={() => signIn("google")}
+            className="w-full flex items-center justify-center gap-2"
+          >
+            <FaGoogle />
+            تسجيل الدخول بجوجل
+          </Button> */}
+
+          <p className="text-sm text-center mt-4">
+            هل لديك حساب؟{" "}
+            <a href="/auth/login" className="text-blue-600 hover:underline">
+              تسجيل الدخول
+            </a>
+          </p>
+        </form>
+      </div>
+    </div>
+  );
+}

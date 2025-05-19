@@ -1,0 +1,62 @@
+'use client';
+import { useState } from 'react';
+import EnhancedProductCard from '@/components/product/EnhancedProductCard';
+import { Product } from '@/types/product';
+
+// Simplified OfferProductCard component that uses EnhancedProductCard
+const OfferProductCard = ({
+    product,
+    quantity,
+    onQuantityChange,
+    onAddToCart,
+    isInCart,
+    showNotification,
+    discountPercentage,
+    customAddLabel,
+    isSpecialOffer = true,
+}: {
+    product: Product;
+    quantity: number;
+    onQuantityChange: (productId: string, delta: number) => void;
+    onAddToCart: (productId: string, quantity: number, product: Product) => void;
+    isInCart: boolean;
+    showNotification: boolean;
+    discountPercentage?: number;
+    customAddLabel?: string;
+    isSpecialOffer?: boolean;
+}) => {
+    // Calculate the percent off if not provided
+    const calculatedDiscount = discountPercentage ||
+        (product.compareAtPrice && product.price
+            ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
+            : 0);
+
+    // Adapter function to convert our onAddToCart to EnhancedProductCard's format
+    const handleAddToCart = (p: Product, qty: number) => {
+        onAddToCart(p.id, qty, p);
+    };
+
+    // Adapter function for quantity change
+    const handleQuantityChange = (delta: number) => {
+        onQuantityChange(product.id, delta);
+    };
+
+    return (
+        <EnhancedProductCard
+            product={product}
+            variant="offer"
+            initialQuantity={quantity}
+            onAddToCart={handleAddToCart}
+            isItemInCart={isInCart}
+            customAddToCartLabel={customAddLabel || 'استفد من العرض'}
+            customInCartLabel="في السلة"
+            className="h-full"
+            showQuantityControls={true}
+        />
+    );
+};
+
+// Ensure a display name for React dev tools
+OfferProductCard.displayName = 'OfferProductCard';
+
+export default OfferProductCard; 

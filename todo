@@ -1,0 +1,78 @@
+# To-Do List for Dashboard Performance Optimization
+
+## 1. Data Fetching Optimization
+- [ ] Implement Pagination for the `fetchOrders` function (e.g., add `limit` and `offset` parameters).
+- [ ] Add Lazy Loading for orders (e.g., infinite scrolling or "Load More" button).
+- [ ] Set Up Caching for frequently accessed data (e.g., Redis for analytics or order statuses).
+
+## 2. Reduce Re-Renders
+- [ ] Memoize Components like `OrderList`, `OrderCard`, and `DashboardHeader` using `React.memo` or `useMemo`.
+- [ ] Implement Virtualization for the order list using libraries like `react-window` or `react-virtualized`.
+
+## 3. Real-Time Updates
+- [ ] Optimize Real-Time Updates by fetching only new or updated orders instead of re-fetching all orders.
+- [ ] Debounce Updates to reduce frequent re-renders during rapid updates.
+
+## 4. Database Query Optimization
+- [ ] Add Indexes to frequently queried fields (e.g., `status`, `createdAt`, `updatedAt`).
+- [ ] Use Aggregation Queries for analytics (e.g., `COUNT`, `GROUP BY`) instead of iterating over all orders in the application.
+
+## 5. Component Rendering
+- [ ] Add Conditional Rendering for skeleton loaders to avoid rendering the full layout when data is unavailable.
+- [ ] Split Large Components like `OrderList` into smaller, focused components.
+
+## 6. Static Asset Optimization
+- [ ] Lazy Load Images and icons to reduce the initial load time.
+- [ ] Optimize Bundles using Webpack or Vite to tree-shake unused assets.
+
+## 7. State Management
+- [ ] Centralize State Management using Redux, Zustand, or Context API for shared states like `viewMode`.
+- [ ] Refactor Local States to reduce complexity and improve maintainability.
+
+## 8. Localization
+- [ ] Integrate a Localization Library like `i18next` for dynamic translations.
+- [ ] Memoize Translation Objects to avoid recalculating them on every render.
+
+## 9. Error Handling
+- [ ] Add User-Friendly Error Messages using a toast notification system.
+- [ ] Implement Retry Logic for failed API calls to handle transient errors.
+
+## 10. Deployment Optimization
+- [ ] Implement Server-Side Rendering (SSR) for components like `DashboardHeader`.
+- [ ] Use Static Site Generation (SSG) for static pages like analytics summaries.
+
+## 11. Performance Monitoring
+- [ ] Set Up Monitoring Tools like Lighthouse, New Relic, or Datadog to track performance bottlenecks.
+- [ ] Add Structured Logging to identify slow database queries and API calls.
+
+## 12. Geospatial Data Refactor
+- [ ] Change latitude and longitude fields in your schema from string to Float (or Decimal) for all relevant models (e.g., Order, OrderInWay, Driver, etc.).
+- [ ] Update your Prisma schema and run a migration to apply the change.
+- [ ] Update all code that reads/writes latitude/longitude to use numbers, not strings.
+- [ ] Update seed scripts and API logic to use numbers for lat/lng.
+- [ ] Test geospatial features (maps, distance calculations, etc.) to ensure they work with numeric lat/lng.
+- [ ] (Optional) Add validation to ensure lat/lng values are within valid ranges (-90 to 90 for latitude, -180 to 180 for longitude).
+
+---
+
+### Priority Breakdown
+#### High Priority (Start Immediately)
+- Pagination and lazy loading for orders.
+- Memoization and virtualization for components.
+- Database indexing and aggregation queries.
+- Optimize real-time updates.
+
+#### Medium Priority
+- Lazy load images and optimize bundles.
+- Centralize state management.
+- Add user-friendly error handling.
+
+#### Low Priority
+- Localization improvements.
+- Deployment optimizations (SSR/SSG).
+- Performance monitoring setup.
+- Refactor latitude/longitude fields to use Float/Decimal
+
+
+-----------------
+- [ ] تفعيل ارسال الفاتور ه ايميل

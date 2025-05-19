@@ -1,0 +1,96 @@
+# SEO Management Hub Guide
+
+This guide provides a comprehensive overview of the SEO Management Hub, designed to help administrators effectively manage and optimize search engine presence for various entities within the platform.
+
+## Introduction
+
+The SEO Management Hub is a centralized interface for configuring all SEO-related settings. It allows for fine-grained control over how your content appears in search results and on social media platforms. The hub is divided into several key sections, each targeting specific aspects of SEO.
+
+## Accessing SEO Sections
+
+From the main SEO page (`/seo`), you can view all existing SEO entries. Each entry can be edited across different aspects:
+- **Basic SEO**: Core meta tags.
+- **Social Media SEO**: Open Graph and Twitter Card settings.
+- **Technical SEO**: Headers, preload assets, and HTTP-equiv tags.
+- **Localization**: Language and hreflang settings.
+- **Advanced SEO**: Schema.org markup and industry-specific data.
+
+You can navigate to these specific editing sections from the main SEO entry view or directly via sidebar links (e.g., `/seo/social`, `/seo/technical`).
+
+## 1. Creating a New SEO Entry (`/seo/create`)
+
+When creating a new SEO entry, you'll define its core properties:
+
+-   **Entity ID / Slug**: A unique identifier for the page or entity this SEO configuration applies to (e.g., `homepage`, `product-slug-123`, `about-us`). This ID is crucial for the system to associate the SEO data with the correct content.
+-   **Meta Title**: The title that appears in search engine results (SERPs) and browser tabs. Aim for conciseness and relevance (max 120 characters recommended).
+-   **Meta Description**: A brief summary of the page's content displayed in SERPs. This should be compelling and encourage clicks (max 320 characters recommended).
+-   **Entity Type**: The type of content this SEO entry is for (e.g., `PAGE`, `PRODUCT`, `BLOG_POST`). This helps in organizing SEO data and can influence available templates for advanced settings.
+-   **Industry Type**: The industry relevant to this content (e.g., `CLOTHING`, `ELECTRONICS`, `FOOD`). This can also influence templates for industry-specific data.
+-   **Canonical URL (Optional)**: The preferred version of a URL if duplicate content exists across multiple URLs. Helps prevent duplicate content issues.
+
+## 2. Editing SEO Aspects
+
+Once an SEO entry is created, you can edit its specific aspects.
+
+### Social Media SEO (`/seo/social`)
+
+This section allows you to control how your content appears when shared on social media platforms.
+
+#### Open Graph (Facebook, LinkedIn, etc.)
+-   **Open Graph Title**: Title used for social sharing. If empty, the Meta Title will often be used as a fallback.
+-   **Open Graph Description**: Description for social sharing. If empty, Meta Description may be used.
+-   **Open Graph Images (URLs)**: URLs of images to display when shared. Provide clear, high-quality images (e.g., 1200x630px). You can add multiple image URLs.
+
+#### Twitter Specific Settings
+-   **Twitter Card Type**: Defines the appearance of Twitter shares (e.g., `summary`, `summary_large_image`). Selecting "None" typically falls back to Open Graph settings.
+-   **Twitter Site Handle**: The Twitter @username of the site/brand.
+-   **Twitter Creator Handle**: The Twitter @username of the content creator.
+-   **Twitter Title**: Title for Twitter shares. Falls back to Open Graph or Meta Title if empty.
+-   **Twitter Description**: Description for Twitter shares. Falls back to Open Graph or Meta Description if empty.
+-   **Twitter Images (URLs)**: URLs of images for Twitter cards.
+
+{/* TODO: Consider adding a custom component here for visual examples of OG/Twitter cards */}
+
+### Technical SEO (`/seo/technical`)
+
+This section deals with more technical aspects that can influence crawling, indexing, and security.
+
+-   **Security Headers**: HTTP headers that enhance your site's security (e.g., `X-Content-Type-Options: nosniff`, `Content-Security-Policy`). Templates for common headers are provided.
+-   **Preload Assets**: URLs of critical assets (fonts, scripts, stylesheets) that should be loaded early by the browser to improve page rendering speed.
+-   **HTTP-Equiv Tags**: Meta tags that simulate HTTP headers (e.g., `content-language: ar-SA`). Use with caution. Templates for common tags are provided.
+
+### Localization SEO (`/seo/localization`)
+
+Configure settings related to language and regional targeting.
+
+-   **Default Language**: The primary language code for this content (e.g., `ar-SA`, `en-US`).
+-   **Supported Languages**: An array of other language codes this content is available in.
+-   **Hreflang Links (JSON)**: A JSON object mapping language codes to alternate URLs for this specific piece of content. This helps search engines serve the correct language version to users.
+    *Example:*
+    ```json
+    {
+      "en-US": "https://example.com/en/your-page-url",
+      "es-ES": "https://example.com/es/your-page-url"
+    }
+    ```
+
+### Advanced SEO (`/seo/advanced`)
+
+This section is for more complex SEO enhancements.
+
+-   **Schema.org Markup (JSON-LD)**: Structured data that helps search engines understand the meaning and context of your content, enabling rich snippets in search results. Templates are provided based on the `EntityType`.
+    *   Refer to [Schema.org](https://schema.org/docs/gs.html) for documentation.
+    *   Validate your schema using the [Google Rich Results Test](https://search.google.com/test/rich-results).
+-   **Industry-Specific Data (JSON)**: Custom JSON data relevant to the page's `IndustryType`. The structure is flexible and depends on your application's needs for that industry. Templates are provided for some industries as a starting point.
+
+{/* TODO: Add a custom component for JSON-LD examples with syntax highlighting */}
+
+## Best Practices
+
+-   **Consistency**: Ensure your meta titles and descriptions are consistent with the page content.
+-   **Keywords**: While not a direct ranking factor in the same way they used to be, relevant keywords in titles and descriptions can improve click-through rates.
+-   **Uniqueness**: Aim for unique titles and descriptions for each page.
+-   **Validation**: Always validate your JSON-LD for Schema.org markup.
+-   **Monitor**: Regularly review your SEO settings and performance using analytics tools.
+
+This guide should help you effectively utilize the SEO Management Hub. For further assistance, consult official SEO documentation or an SEO specialist.

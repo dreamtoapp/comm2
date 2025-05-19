@@ -1,0 +1,58 @@
+You're a senior SEO engineer and technical marketer.
+
+I want you to **analyze my full Next.js 15 + React 19 codebase**, written in TypeScript using `pnpm` and Prisma with MongoDB.
+
+## 🎯 KEY SEO PATHS
+- `lib/seo-utils.ts`: core dynamic SEO metadata handler (based on `pageId`)
+- `app/seo/`: main folder for SEO-related implementation (pages, layout, or API)
+- Prisma schema contains SEO fields or models
+
+---
+
+## 🔍 TASKS TO DO
+
+### 1. 🔎 Pre-Audit Report (NO CHANGES YET)
+- Provide a full **Markdown report** that includes:
+  - Overview of current SEO setup
+  - Review of `lib/seo-utils.ts` usage across routes
+  - Review of `app/seo/` folder logic
+  - Review of Prisma schema’s SEO fields
+  - Gaps, weaknesses, and potential SEO issues
+  - What is dynamic, reusable, and hardcoded
+
+### 2. 📋 Audit Scope
+Check the following SEO best practices:
+- ✅ Meta tags: title, description, charset, viewport
+- ✅ Canonical tags
+- ✅ Open Graph + Twitter cards
+- ✅ Structured Data (JSON-LD for Product, Article, etc.)
+- ✅ Sitemap.xml, robots.txt, meta robots tags
+- ✅ Dynamic metadata using `pageId` from Prisma
+- ✅ Image SEO: alt, dimensions, lazy loading
+- ✅ SSR/SSG correctness (metadata rendering)
+- ✅ Mobile-friendliness and Core Web Vitals support
+- ✅ `seo-utils.ts` flexibility, DRYness, scalability
+
+### 3. 📈 SEO Strategy & Improvement Plan
+- Deliver a **prioritized checklist** (high → low)
+- Do **NOT** take any action unless I confirm it
+- Do **NOT** break existing core functionality
+- All proposed updates must be **non-breaking** or backward-compatible
+
+---
+
+## 🧠 Best Practice Sources
+Use current guidance from:
+- [Google Search Central](https://developers.google.com/search)
+- [MDN Web Docs](https://developer.mozilla.org/)
+- [Next.js SEO Docs](https://nextjs.org/docs/app/building-your-application/optimizing/metadata)
+- [Schema.org](https://schema.org/)
+- [Ahrefs, Moz, Yoast](https://moz.com/learn/seo/what-is-seo)
+
+---
+
+## 🚦COMMUNICATION STYLE
+- Be precise and technical
+- Provide **Markdown output**
+- Ask **yes/no** questions if anything is unclear
+- After initial report, proceed **step by step**

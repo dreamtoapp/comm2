@@ -1,0 +1,188 @@
+'use client';
+
+import { cva, type VariantProps } from 'class-variance-authority';
+import dynamic from 'next/dynamic';
+
+// Icon variants using CVA for consistent styling
+const iconVariants = cva('', {
+  variants: {
+    variant: {
+      default: '',
+      primary: 'text-primary',
+      secondary: 'text-secondary',
+      destructive: 'text-destructive',
+      muted: 'text-muted-foreground',
+      accent: 'text-accent-foreground',
+      success: 'text-green-600',
+      warning: 'text-amber-500',
+      info: 'text-blue-500',
+    },
+    size: {
+      xs: '',
+      sm: '',
+      md: '',
+      lg: '',
+      xl: '',
+    },
+    animation: {
+      none: '',
+      spin: 'animate-spin',
+      pulse: 'animate-pulse',
+      bounce: 'animate-bounce',
+      ping: 'animate-ping',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    size: 'md',
+    animation: 'none',
+  },
+});
+
+// Common icon sizes in pixels
+export const IconSizes = {
+  xs: 16,
+  sm: 20,
+  md: 24,
+  lg: 32,
+  xl: 40,
+};
+
+// Base SVG props interface
+interface BaseSVGProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+// Icon component props
+export interface IconProps
+  extends Omit<BaseSVGProps, 'ref' | 'size'>,
+    VariantProps<typeof iconVariants> {
+  name: string;
+  library?: 'lucide' | 'fa';
+  label?: string;
+  size?: keyof typeof IconSizes;
+}
+
+// No need for cache with dynamic import
+
+/**
+ * Centralized Icon component that renders icons from different libraries
+ * with consistent styling and accessibility features.
+ *
+ * @example <Icon name="Heart" />
+ * @example <Icon name="Heart" variant="primary" size="lg" animation="pulse" />
+ * @example <Icon name="Heart" library="fa" variant="destructive" />
+ */
+export const Icon = ({
+  name,
+  library = 'lucide',
+  className,
+  variant,
+  size = 'md',
+  animation,
+  label,
+  ...props
+}: IconProps) => {
+  // Prepare props for the dynamic component
+  const iconProps = {
+    ...props,
+    size: IconSizes[size] || IconSizes.md,
+    className: iconVariants({ variant, size, animation }),
+    ...(label
+      ? {
+          'aria-label': label,
+          role: 'img',
+        }
+      : {
+          'aria-hidden': true,
+        }),
+  };
+
+  // Create a component that will dynamically load the icon
+  const DynamicIcon = dynamic(
+    async () => {
+      // Dynamic import based on library
+      try {
+        if (library === 'lucide') {
+          const mod = await import('lucide-react');
+          const IconComponent = mod[name as keyof typeof mod];
+          if (IconComponent) {
+            return IconComponent as any;
+          }
+          console.warn(`Icon "${name}" not found in lucide library`);
+        } else if (library === 'fa') {
+          const mod = await import('react-icons/fa6');
+          const IconComponent = mod[name as keyof typeof mod];
+          if (IconComponent) {
+            return IconComponent as any;
+          }
+          console.warn(`Icon "${name}" not found in fa library`);
+        } else {
+          console.warn(`Icon library "${library}" not supported`);
+        }
+      } catch (err) {
+        console.error(`Failed to load icon: ${name}`, err);
+      }
+
+      // Return empty component as fallback
+      return () => null;
+    },
+    {
+      loading: () => null,
+      ssr: false,
+    },
+  );
+
+  // Render the dynamically loaded icon with proper props
+  return <DynamicIcon {...iconProps} />;
+};
+
+Icon.displayName = 'Icon';
+
+// Common icons used throughout the application
+export const Icons = {
+  // UI Navigation
+  ChevronLeft: (props: Omit<IconProps, 'name'>) => <Icon name='ChevronLeft' {...props} />,
+  ChevronRight: (props: Omit<IconProps, 'name'>) => <Icon name='ChevronRight' {...props} />,
+  ChevronUp: (props: Omit<IconProps, 'name'>) => <Icon name='ChevronUp' {...props} />,
+  ChevronDown: (props: Omit<IconProps, 'name'>) => <Icon name='ChevronDown' {...props} />,
+
+  // Actions
+  Search: (props: Omit<IconProps, 'name'>) => <Icon name='Search' {...props} />,
+  ShoppingCart: (props: Omit<IconProps, 'name'>) => <Icon name='ShoppingCart' {...props} />,
+  Heart: (props: Omit<IconProps, 'name'>) => <Icon name='Heart' {...props} />,
+  User: (props: Omit<IconProps, 'name'>) => <Icon name='User' {...props} />,
+  Settings: (props: Omit<IconProps, 'name'>) => <Icon name='Settings' {...props} />,
+  Menu: (props: Omit<IconProps, 'name'>) => <Icon name='Menu' {...props} />,
+  X: (props: Omit<IconProps, 'name'>) => <Icon name='X' {...props} />,
+
+  // Feedback
+  Check: (props: Omit<IconProps, 'name'>) => <Icon name='Check' {...props} />,
+  AlertCircle: (props: Omit<IconProps, 'name'>) => <Icon name='AlertCircle' {...props} />,
+  Info: (props: Omit<IconProps, 'name'>) => <Icon name='Info' {...props} />,
+
+  // Ratings
+  Star: (props: Omit<IconProps, 'name'>) => <Icon name='Star' {...props} />,
+  StarHalf: (props: Omit<IconProps, 'name'>) => <Icon name='StarHalf' {...props} />,
+
+  // Media
+  Image: (props: Omit<IconProps, 'name'>) => <Icon name='Image' {...props} />,
+  ImageOff: (props: Omit<IconProps, 'name'>) => <Icon name='ImageOff' {...props} />,
+  Upload: (props: Omit<IconProps, 'name'>) => <Icon name='Upload' {...props} />,
+  UploadCloud: (props: Omit<IconProps, 'name'>) => <Icon name='UploadCloud' {...props} />,
+
+  // Status
+  Loader: (props: Omit<IconProps, 'name'>) => <Icon name='Loader2' animation='spin' {...props} />,
+  Trash: (props: Omit<IconProps, 'name'>) => <Icon name='Trash2' {...props} />,
+
+  // React Icons (FA)
+  FaHeart: (props: Omit<IconProps, 'name' | 'library'>) => (
+    <Icon name='FaHeart' library='fa' {...props} />
+  ),
+  FaUser: (props: Omit<IconProps, 'name' | 'library'>) => (
+    <Icon name='FaUser' library='fa' {...props} />
+  ),
+  FaShoppingCart: (props: Omit<IconProps, 'name' | 'library'>) => (
+    <Icon name='FaShoppingCart' library='fa' {...props} />
+  ),
+};

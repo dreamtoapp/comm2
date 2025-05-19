@@ -1,0 +1,593 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+model Supplier {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String    @default("")
+  slug      String    @default("")
+  logo      String? 
+  email     String    @default("")
+  phone     String    @default("")
+  address   String    @default("")
+  type      String    @default("company")
+  products  Product[] 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  translations SupplierTranslation[] 
+}
+
+
+model SupplierTranslation {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  supplierId     String   @db.ObjectId
+  supplier       Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  languageCode   String   // e.g., "en", "ar-SA"
+  name           String   
+  address        String?  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([supplierId, languageCode])
+}
+
+model Product {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String   @default("")
+  slug       String   @default("") @unique 
+  price      Float    @default(0)
+  compareAtPrice Float? // Optional: Price before sale
+  costPrice  Float?   // Optional: Cost of the product to the business
+  size       String?
+  details    String?
+  imageUrl   String?  // Main image (keeping for backward compatibility)
+  images     String[] // Array of image URLs for multiple product images
+  supplierId String   @db.ObjectId
+  type       String   @default("product")
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+
+  productCode String?  // Product code/SKU
+  gtin        String?  // Optional: Global Trade Item Number (UPC, EAN, etc.)
+  material    String?  // Material information
+  brand       String?  // Brand name
+  color       String?  // Color information
+  dimensions  String?  // Product dimensions
+  weight      String?  // Product weight
+  features    String[] // Product features as array
+
+  // Shipping and return information
+  requiresShipping    Boolean  @default(true) //  product require shipping?
+  shippingDays        String?  @default("3-5") // Default shipping days
+  
+  returnPeriodDays    Int?     @default(14)    // Default return period in days
+  hasQualityGuarantee Boolean  @default(true)  // product has quality guarantee
+  careInstructions    String?  // Care instructions
+
+
+  published  Boolean @default(false)
+  outOfStock Boolean @default(false)
+  manageInventory Boolean @default(true) // to track stock for this product
+  stockQuantity Int?    // Current stock level (if manageInventory is true)
+
+  // Rating and review fields
+  rating      Float?  // Average rating (1-5 stars)
+  reviewCount Int     @default(0) // Number of reviews
+  reviews     Review[] // Relation to reviews
+
+  // Wishlist relation
+  wishlistedBy WishlistItem[] // Users who have wishlisted this product
+
+  orderItems OrderItem[] // A product can belong to multiple order items
+  // categories Category[]  // Old implicit relation removed
+  categoryAssignments CategoryProduct[] // Explicit relation via join table
+  
+  // Organization & SEO
+  tags              String[] @default([]) // tags for filtering and organization
+  metaTitle         String?               // Custom SEO title
+  metaDescription   String?               // Custom SEO description
+  translations      ProductTranslation[]  // Relation to product translations
+
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+// Model for Product Translations
+model ProductTranslation {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId       String   @db.ObjectId
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  languageCode    String   // e.g., "en", "ar-SA"
+  name            String   // Translated product name
+  details         String?  // Translated product details
+  metaTitle       String?  // Translated SEO title
+  metaDescription String?  // Translated SEO description
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([productId, languageCode]) // Ensure one translation per language for each product
+}
+
+model User {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId  
+  phone         String?         @unique
+  name          String?
+  email         String?
+  emailVerified DateTime?       @map("email_verified")
+  password      String?
+  image         String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  accounts      Account[]
+
+
+  latitude  String  @default("")
+  longitude String  @default("")
+  address   String? @default("")
+  role      String  @default("")
+  isOtp     Boolean @default(false)
+   isOauth   Boolean   @default(false)
+  otpCode   String? @default("")
+  orders    Order[] // List of orders associated with the user
+  reviews   Review[] // User's product reviews
+  wishlist  WishlistItem[] // User's wishlist items
+
+  Notification Notification[]
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Order {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId 
+  orderNumber   String  @unique
+  customerId    String  @db.ObjectId // Reference to the user 
+  customer      User    @relation(fields: [customerId], references: [id]) // Relation to the User model
+  customerName  String?
+  driverId      String? @db.ObjectId // Changed to ObjectId type
+  driver        Driver? @relation(fields: [driverId], references: [id]) // New relation
+  latitude      String?
+  longitude     String?
+  status        String @default("PENDING") 
+  isTripStart   Boolean @default(false) // true if trip start -- false on cancel or delever
+  amount        Float   @default(0)
+  resonOfcancel String? @default("")
+  paymentMethod String? @default("CASH") // Default payment method
+  deliveredAt   DateTime? // Date when the order was delivered
+
+  items      OrderItem[]
+  orderInWay OrderInWay? // علاقة واحد لواحد (طلبية واحدة ← تتبع واحد)
+  shiftId    String      @db.ObjectId // Ensure this matches Shift.id's native type
+  shift      Shift       @relation(fields: [shiftId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId // Explicitly define as ObjectId
+  orderId   String  @db.ObjectId // Ensure this matches the type of Order.id
+  productId String  @db.ObjectId
+  quantity  Int     @default(0)
+  price     Float   @default(0)
+  order     Order?   @relation(fields: [orderId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id]) // Link to Product
+}
+
+// Driver Model
+model Driver {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  name       String      @default("")
+  email      String      @default("")
+  phone      String      @default("")
+  imageUrl   String?     @default("")
+  password   String?     @default("")
+  orders     Order[] // One-to-many relationship with Order
+  orderInWay OrderInWay? // تغيير من array إلى optional واحد
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model OrderInWay {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId     String   @unique @db.ObjectId // أضفنا @unique هنا
+  order       Order    @relation(fields: [orderId], references: [id])
+  driverId    String   @unique @db.ObjectId // أضفنا @unique هنا
+  driver      Driver   @relation(fields: [driverId], references: [id])
+  orderNumber String?
+  latitude    Float?
+  longitude   Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([orderId, driverId])
+}
+
+// LocationHistory Model
+model LocationHistory {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  driverId  String
+  orderId   String?
+  latitude  Float // Latitude of the location
+  longitude Float // Longitude of the location
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PromotionType {
+  PERCENTAGE_PRODUCT
+  FIXED_PRODUCT
+  PERCENTAGE_ORDER
+  FIXED_ORDER
+  FREE_SHIPPING
+}
+
+enum DiscountType { // Relevant for some PromotionTypes
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+// Promotion Model
+model Promotion {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String   // Made non-optional, title is usually required
+  slug          String   @unique @default("") // Add slug field for 
+  description   String?
+  imageUrl      String?
+
+  type          PromotionType @default(PERCENTAGE_PRODUCT)
+  discountValue Float?        // Value of discount (e.g., 10 for 10% or 10 SAR)
+  discountType  DiscountType? // PERCENTAGE or FIXED_AMOUNT
+
+  couponCode    String?  @unique 
+  
+  productIds    String[] @db.ObjectId // Products this promotion applies to (for PRODUCT types)
+  // categoryIds   String[] @db.ObjectId // For category-wide promotions (future)
+
+  minimumOrderValue Float? // Min order amount for promotion (esp. for ORDER types or FREE_SHIPPING)
+
+  startDate     DateTime?
+  endDate       DateTime?
+  
+  active        Boolean  @default(true)
+  // usageLimit    Int?     // Total times this promotion can be used (future)
+  // usedCount     Int      @default(0) // (future)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt     // Corrected
+  translations  PromotionTranslation[]
+}
+
+// Model for Promotion Translations
+model PromotionTranslation {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  promotionId    String    @db.ObjectId
+  promotion      Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  languageCode   String    // e.g., "en", "ar-SA"
+  title          String    // Translated promotion title
+  description    String?   // Translated promotion description
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([promotionId, languageCode])
+}
+
+model Counter {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  key     String @unique // A unique key to identify the counter (e.g., "order_counter")
+  counter Int    @default(0)
+}
+
+model Shift {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectId
+  name      String   @default("")
+  startTime String   @default("")
+  endTime   String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  orders Order[] // An order belongs to a specific shift
+}
+
+model Company {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectId
+  fullName       String   @default("") // Full name of the company owner/contact person
+  email          String   @default("") // Email address
+  phoneNumber    String   @default("") // Phone number
+  whatsappNumber String   @default("") // WhatsApp number
+  logo           String   @default("") // Profile picture URL
+  profilePicture String   @default("") // Profile picture URL
+  bio            String   @default("") // Bio/description
+  taxNumber      String   @default("") // Tax number
+  taxQrImage     String   @default("") // URL of the tax QR image
+  twitter        String   @default("") // Twitter URL
+  linkedin       String   @default("") // LinkedIn URL
+  instagram      String   @default("") // Instagram URL
+  tiktok         String   @default("") // TikTok URL
+  facebook       String   @default("") // Facebook URL
+  snapchat       String   @default("") // Snapchat URL
+  website        String   @default("") // Website URL
+  address        String   @default("") // Address of the company
+  latitude       String   @default("") // Latitude of the company location
+  longitude      String   @default("") // Longitude of the company location
+  createdAt      DateTime @default(now()) // Timestamp of creation
+  updatedAt      DateTime @updatedAt // Timestamp of last update
+}
+
+model NewLetter {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model ContactSubmission {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+  replies   Reply[] // One-to-many relationship: one submission can have multiple replies
+}
+
+model Reply {
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  content             String // The reply message
+  sentAt              DateTime          @default(now()) // Timestamp for when the reply was sent
+  contactSubmissionId String            @db.ObjectId // Ensure this matches the native type of ContactSubmission.id
+  contactSubmission   ContactSubmission @relation(fields: [contactSubmissionId], references: [id])
+}
+
+model Changelog {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  subject   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt // Timestamp of last update
+}
+
+model Term {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  content   String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  translations TermTranslation[] // Relation to term translations
+
+  @@map("terms")
+}
+
+// Model for Term Translations
+model TermTranslation {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  termId         String   @db.ObjectId
+  term           Term     @relation(fields: [termId], references: [id], onDelete: Cascade)
+  languageCode   String   // e.g., "en", "ar-SA"
+  content        String   // Translated term content
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([termId, languageCode])
+}
+
+model GlobalSEO {
+  id                    String     @id @default(auto()) @map("_id") @db.ObjectId
+  entityId              String
+  entityType            EntityType @default(PAGE)
+  locale                String     // Add this line 👈
+  metaTitle             String
+  metaDescription       String
+  canonicalUrl          String?
+  robots                String     @default("index, follow")
+  openGraphTitle        String?
+  openGraphDescription  String?
+  openGraphImage        String?
+  twitterCardType       String?
+  twitterImage          String?
+  schemaOrg             Json?
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+
+  @@unique([entityId, entityType, locale]) // 👈 Update uniqueness to handle per-locale entries
+}
+
+
+// Enum for different types of entities that can have SEO settings
+enum EntityType {
+  PAGE     // For general pages like homepage, about, contact
+  PRODUCT
+  CATEGORY
+  OFFER
+  BLOG_POST
+  BLOG_CATEGORY
+  // Add other types as needed
+}
+
+model Notification {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectId
+  message     String   @default("") // The notification message
+  type        String   @default("order") // Type of notification (e.g., info, success, error)
+  status      String   @default("unread") // Status of the notification (e.g., unread, read)
+  userId      String?  @db.ObjectId // Optional reference to the user receiving the notification
+  user        User?    @relation(fields: [userId], references: [id]) // Relation to the User model
+  createdAt   DateTime @default(now()) // Timestamp of creation
+  updatedAt   DateTime @updatedAt // Timestamp of last update
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  content   String
+  createdAt DateTime @default(now())
+  userId    String   @db.ObjectId
+  requestId String   @db.ObjectId
+
+}
+
+model Request {
+   id          String   @id @default(auto()) @map("_id") @db.ObjectId // MongoDB ObjectId
+  title       String      // عنوان الطلب
+  description String      // وصف الطلب
+  status      RequestStatus @default(PENDING)
+  type        RequestType // نوع الطلب
+  createdBy   String      // اسم أو بريد العميل
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  attachment  String?     // رابط مرفق (اختياري)
+}
+model CommentTechno {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  message    String
+  createdBy  String
+  createdAt  DateTime @default(now())
+  requestId  String   @db.ObjectId
+  // Optionally: isAdmin Boolean
+}
+
+enum RequestStatus {
+  PENDING      // قيد الانتظار
+  IN_PROGRESS  // قيد التنفيذ
+  DONE         // تم التنفيذ
+  REJECTED     // مرفوض
+}
+
+enum RequestType {
+  BUG         // مشكلة
+  FEATURE     // طلب جديد
+  IMPROVEMENT // تعديل
+}
+
+model SupportPing {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  message   String
+  timestamp DateTime @default(now())
+}
+
+// Expense Model
+model Expense {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  amount    Float    // قيمة المصروف
+  note      String?  // وصف أو ملاحظة
+  category  String?  // تصنيف المصروف (اختياري)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?  // المستخدم الذي أضاف المصروف
+}
+
+// Review Model for Product Ratings
+model Review {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  rating    Int      // 1-5 stars
+  comment   String   // Review text
+  productId String   @db.ObjectId
+  userId    String   @db.ObjectId
+  isVerified Boolean @default(false) // Whether the user has purchased the product
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  product   Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+// Wishlist Model for User's Favorite Products
+model WishlistItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  productId String   @db.ObjectId
+  createdAt DateTime @default(now())
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  // Ensure a user can only wishlist a product once
+  @@unique([userId, productId])
+}
+
+// Category Model
+model Category {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique // Category name, should be unique
+  slug        String    @unique // URL-friendly slug, should be unique
+  description String?   // Optional description
+  imageUrl    String?   // Optional image URL for the category
+  // parentId    String?   @db.ObjectId // For subcategories, refers to another Category's id
+  // parent      Category? @relation("SubCategories", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  // children    Category[] @relation("SubCategories") // List of subcategories
+  // products    Product[] // Old implicit relation removed
+  productAssignments CategoryProduct[] // Explicit relation via join table
+  
+  // SEO Fields for Category
+  metaTitle         String?   // Custom SEO title for the category page
+  metaDescription   String?   // Custom SEO description for the category page
+  keywords          String[] // Optional: if you want category-specific keywords
+
+  translations       CategoryTranslation[] // Relation to category translations
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// Model for Category Translations
+model CategoryTranslation {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId     String   @db.ObjectId
+  category       Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  languageCode   String   // e.g., "en", "ar-SA"
+  name           String   // Translated category name
+  description    String?  // Translated category description
+  metaTitle      String?  // Translated SEO title for category
+  metaDescription String?  // Translated SEO description for category
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([categoryId, languageCode])
+}
+
+// Join table for Category and Product (Many-to-Many)
+model CategoryProduct {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId  String   @db.ObjectId
+  productId   String   @db.ObjectId
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade) // If a category is deleted, remove assignments
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade) // If a product is deleted, remove assignments
+  assignedAt  DateTime @default(now())
+
+  @@unique([categoryId, productId])
+}
+
+model AnalyticsSettings {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  // Used to ensure only one global analytics settings record exists
+  singletonKey         String   @unique @default("global_analytics_settings")
+  googleAnalyticsId    String?
+  facebookPixelId      String?
+  tiktokPixelId        String?
+  snapchatPixelId      String?
+  pinterestTagId       String?
+  linkedinInsightTagId String?
+  updatedAt            DateTime @updatedAt
+}

@@ -1,0 +1,308 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-cairo: 'Cairo', sans-serif;
+  --font-roboto: 'Roboto', sans-serif;
+}
+
+@layer base {
+  :root {
+    /* الوضع النهاري */
+    --background: 0 0% 98%; /* خلفية فاتحة جدًا */
+    --foreground: 222.2 84% 10%; /* نص داكن للتباين الجيد */
+
+    /* البطاقات والنوافذ المنبثقة */
+    --card: 0 0% 100%; /* خلفية بيضاء للبطاقات */
+    --card-foreground: 222.2 84% 10%; /* نص داكن للبطاقات */
+    --popover: 0 0% 100%; /* خلفية بيضاء للنوافذ المنبثقة */
+    --popover-foreground: 222.2 84% 10%; /* نص داكن للنوافذ المنبثقة */
+
+    /* الألوان الأساسية */
+    --primary: 210 80% 50%; /* لون أساسي (أزرق) */
+    --primary-foreground: 0 0% 100%; /* نص أبيض على الأزرار الأساسية */
+
+    /* الألوان الثانوية */
+    --secondary: 220 14% 94%; /* لون ثانوي (رمادي فاتح) */
+    --secondary-foreground: 222.2 84% 10%; /* نص داكن على العناصر الثانوية */
+
+    /* العناصر الخافتة */
+    --muted: 220 14% 90%; /* لون خافت (رمادي فاتح) */
+    --muted-foreground: 220 14% 45%; /* نص رمادي للعناصر الخافتة */
+
+    /* الألوان المميزة */
+    --accent: 210 80% 50%; /* لون مميز (أزرق) */
+    --accent-foreground: 0 0% 100%; /* نص أبيض على العناصر المميزة */
+
+    /* الألوان التدميرية */
+    --destructive: 0 84.2% 60.2%; /* لون تدميري (أحمر) */
+    --destructive-foreground: 0 0% 100%; /* نص أبيض على الأزرار التدميرية */
+
+    /* الحدود وحقول الإدخال */
+    --border: 220 90% 80%; /* لون الحدود (رمادي فاتح - تم تعديله ليكون أغمق قليلاً) */
+    --input: 220 30% 90%; /* لون حقول الإدخال (رمادي فاتح) */
+
+    /* حلقة التركيز */
+    --ring: 210 80% 50%; /* لون حلقة التركيز (أزرق) */
+
+    /* زوايا مدورة */
+    --radius: 0.5rem;
+
+    /* Semantic Status Colors for Cards - Light Mode */
+    --info-soft-background: 220 90% 93%;    /* Light Blue BG */
+    --info-foreground: 224 76% 48%;         /* Dark Blue Text */
+    --success-soft-background: 150 75% 90%; /* Light Green BG */
+    --success-foreground: 160 93% 24%;      /* Dark Green Text */
+    --warning-soft-background: 56 90% 88%;  /* Light Yellow BG */
+    --warning-foreground: 30 89% 37%;       /* Dark Yellow/Orange Text */
+    --neutral-soft-background: 270 100% 95%;/* Light Purple BG */
+    --neutral-foreground: 270 65% 40%;      /* Dark Purple Text */
+    --danger-soft-background: 0 90% 94%;    /* Light Red BG */
+    --danger-foreground: 0 72% 42%;         /* Dark Red Text */
+    --special-soft-background: 330 80% 95%; /* Light Pink BG */
+    --special-foreground: 330 77% 42%;      /* Dark Pink Text */
+
+    /* ألوان الرسوم البيانية */
+    --chart-1: 12 76% 61%; /* ألوان للرسوم البيانية */
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    /* الوضع الليلي */
+    --background: 222.2 84% 4%; /* خلفية داكنة جدًا */
+    --foreground: 210 40% 98%; /* نص فاتح للتباين الجيد */
+
+    /* البطاقات والنوافذ المنبثقة */
+    --card: 222.2 84% 8%; /* خلفية داكنة للبطاقات (أفتح قليلاً من الخلفية) */
+    --card-foreground: 210 40% 98%; /* نص فاتح للبطاقات */
+    --popover: 222.2 84% 8%; /* خلفية داكنة للنوافذ المنبثقة */
+    --popover-foreground: 210 40% 98%; /* نص فاتح للنوافذ المنبثقة */
+
+    /* الألوان الأساسية */
+    --primary: 210 80% 50%; /* لون أساسي (أزرق) */
+    --primary-foreground: 0 0% 100%; /* نص أبيض على الأزرار الأساسية */
+
+    /* الألوان الثانوية */
+    --secondary: 217.2 32.6% 15%; /* لون ثانوي (رمادي داكن) */
+    --secondary-foreground: 210 40% 98%; /* نص فاتح على العناصر الثانوية */
+
+    /* العناصر الخافتة */
+    --muted: 217.2 32.6% 15%; /* لون خافت (رمادي داكن) */
+    --muted-foreground: 215 20.2% 70%; /* نص رمادي فاتح للعناصر الخافتة */
+
+    /* الألوان المميزة */
+    --accent: 210 80% 50%; /* لون مميز (أزرق) */
+    --accent-foreground: 0 0% 100%; /* نص أبيض على العناصر المميزة */
+
+    /* الألوان التدميرية */
+    --destructive: 0 62.8% 40%; /* لون تدميري (أحمر داكن) */
+    --destructive-foreground: 0 0% 100%; /* نص أبيض على الأزرار التدميرية */
+
+    /* الحدود وحقول الإدخال */
+    --border: 217.2 32.6% 25%; /* لون الحدود (رمادي داكن - تم تعديله ليكون أفتح) */
+    --input: 217.2 32.6% 20%; /* لون حقول الإدخال (رمادي داكن) */
+
+    /* حلقة التركيز */
+    --ring: 210 80% 50%; /* لون حلقة التركيز (أزرق) */
+
+    /* Semantic Status Colors for Cards - Dark Mode */
+    --info-soft-background: 220 50% 15%;    /* Dark Blue BG */
+    --info-foreground: 220 80% 85%;         /* Light Blue Text */
+    --success-soft-background: 150 50% 15%; /* Dark Green BG */
+    --success-foreground: 150 70% 75%;      /* Light Green Text */
+    --warning-soft-background: 45 50% 18%;  /* Dark Yellow BG */
+    --warning-foreground: 45 80% 75%;       /* Light Yellow Text */
+    --neutral-soft-background: 270 40% 15%; /* Dark Purple BG */
+    --neutral-foreground: 270 70% 80%;      /* Light Purple Text */
+    --danger-soft-background: 0 50% 18%;    /* Dark Red BG */
+    --danger-foreground: 0 80% 80%;         /* Light Red Text */
+    --special-soft-background: 330 40% 18%; /* Dark Pink BG */
+    --special-foreground: 330 70% 80%;      /* Light Pink Text */
+
+    /* ألوان الرسوم البيانية */
+    --chart-1: 220 70% 50%; /* أزرق */
+    --chart-2: 160 60% 45%; /* أخضر مزرق */
+    --chart-3: 30 80% 55%; /* برتقالي */
+    --chart-4: 280 65% 60%; /* بنفسجي */
+    --chart-5: 340 75% 55%; /* وردي */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.relative.w-full.h-0 {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* Adjust aspect ratio as needed */
+}
+
+.absolute.inset-0.w-full.h-full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .relative.w-full.h-0 {
+    padding-bottom: 100%; /* Adjust aspect ratio for smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .absolute.inset-0.w-full.h-full {
+    padding: 10px; /* Add padding for better spacing */
+  }
+}
+
+/* React-Multi-Carousel Custom Styles */
+/* Carousel container */
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Carousel item */
+.carousel-item {
+  padding: 0;
+  height: 100%;
+}
+
+/* Custom dot styles */
+.custom-dot-list-style {
+  position: absolute;
+  bottom: 10px;
+  display: flex !important;
+  justify-content: center;
+  width: 100%;
+  z-index: 20;
+}
+
+.custom-dot-list-style li {
+  margin: 0 4px;
+}
+
+.custom-dot-list-style button {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  padding: 0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.custom-dot-list-style .react-multi-carousel-dot--active button {
+  background: white;
+  width: 10px;
+  height: 10px;
+}
+
+/* Fix for carousel arrows */
+.react-multi-carousel-list .react-multiple-carousel__arrow {
+  background: rgba(0, 0, 0, 0.5) !important;
+  border-radius: 50% !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  z-index: 20 !important;
+}
+
+.react-multi-carousel-list .react-multiple-carousel__arrow:hover {
+  background: rgba(0, 0, 0, 0.7) !important;
+}
+
+.react-multi-carousel-list .react-multiple-carousel__arrow--left {
+  left: 10px !important;
+}
+
+.react-multi-carousel-list .react-multiple-carousel__arrow--right {
+  right: 10px !important;
+}
+
+/* Simple Carousel Styles */
+.react-multi-carousel-list {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+}
+
+.carousel-item-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  color: white;
+}
+
+.custom-dot-list-style {
+  position: absolute;
+  bottom: 10px;
+  display: flex !important;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-align: center;
+  z-index: 1;
+}
+
+.custom-dot-list-style li {
+  display: inline-block;
+  margin: 0 4px;
+}
+
+.custom-dot-list-style button {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.custom-dot-list-style .react-multi-carousel-dot--active button {
+  background: white;
+  width: 10px;
+  height: 10px;
+}
