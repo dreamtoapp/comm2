@@ -416,7 +416,7 @@ enum EntityType {
   PAGE     // For general pages like homepage, about, contact
   PRODUCT
   CATEGORY
-  OFFER
+  PROMOTION
   BLOG_POST
   BLOG_CATEGORY
 }
